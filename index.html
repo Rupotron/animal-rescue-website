@@ -187,6 +187,11 @@
                                 <option value="consultation">Consult a Veterinarian</option>
                             </select>
                         </div>
+                        <div class="form-group">
+    <input type="text" id="location" name="location" class="form-control border-0 p-4" placeholder="Fetching your address..." readonly required />
+</div>
+
+
                         <div>
                             <button class="btn btn-dark btn-block border-0 py-3" type="submit">Book Appointment</button>
                         </div>
@@ -240,6 +245,41 @@
     </div>
 </div>
 <!-- Booking End -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyB5mqJyBYWdOHyGQtwpk1m8QzZrz2VTHtU`;
+
+                fetch(geocodingUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        const locationInput = document.getElementById("location");
+                        if (data.status === "OK") {
+                            const address = data.results[0].formatted_address;
+                            locationInput.value = address;
+                        } else {
+                            locationInput.value = "Unable to fetch address";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error with Geocoding API:", error);
+                        document.getElementById("location").value = "Error fetching address";
+                    });
+            },
+            function (error) {
+                document.getElementById("location").value = "Permission denied or unavailable";
+                console.error("Geolocation error:", error.message);
+            }
+        );
+    } else {
+        document.getElementById("location").value = "Geolocation not supported";
+    }
+});
+</script>
 
 
 <!-- About Start -->
@@ -707,6 +747,12 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5mqJyBYWdOHyGQtwpk1m8QzZrz2VTHtU" 
+    async defer>
+</script>
+
+
 </body>
 
 </html>

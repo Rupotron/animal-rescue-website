@@ -1,16 +1,17 @@
 <?php
 include("db_config.php");
 
-$name = $_POST['name'] ?? '';
-$email = $_POST['email'] ?? '';
-$date = $_POST['date'] ?? '';
-$time = $_POST['time'] ?? '';
-$service = $_POST['service'] ?? '';
+$name     = $_POST['name'] ?? '';
+$email    = $_POST['email'] ?? '';
+$date     = $_POST['date'] ?? '';
+$time     = $_POST['time'] ?? '';
+$service  = $_POST['service'] ?? '';
+$location = $_POST['location'] ?? '';
 
-if ($name && $email && $date && $time && $service) {
-    $stmt = $conn->prepare("INSERT INTO appointments (name, email, date, time, service) VALUES (?, ?, ?, ?, ?)");
+if ($name && $email && $date && $time && $service && $location) {
+    $stmt = $conn->prepare("INSERT INTO appointments (name, email, date, time, service, location) VALUES (?, ?, ?, ?, ?, ?)");
     if ($stmt) {
-        $stmt->bind_param("sssss", $name, $email, $date, $time, $service);
+        $stmt->bind_param("ssssss", $name, $email, $date, $time, $service, $location);
         $stmt->execute();
         $stmt->close();
         $conn->close();
